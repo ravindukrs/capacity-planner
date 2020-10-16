@@ -72,7 +72,6 @@ def run_rfr(label):
             rfr = RandomForestRegressor(
                 max_depth=best_params["max_depth"],
                 n_estimators=best_params["n_estimators"],
-                random_state=best_params["random_state"],
                 verbose=False
             )
 

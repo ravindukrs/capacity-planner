@@ -11,7 +11,7 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error
 from sklearn.svm import SVR
 from metric_functions import root_mean_squared_percentage_error, mean_absolute_percentage_error
 
-def run_svr_poly_2d(label):
+def run_svr_poly_3d(label):
     predict_label = None
     if label == "tps":
         predict_label = 9
@@ -57,7 +57,7 @@ def run_svr_poly_2d(label):
                     'C': [0.1, 1, 100, 1000, 2000, 4000, 8000, 16000, 32000, 64000, 128000],
                     'epsilon': [0.0001, 0.0005, 0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 1, 5, 10, 20, 40, 60, 80, 100, 200,
                                 400],
-                    'degree': [2],
+                    'degree': [3],
                     'coef0': [0.1, 0.01, 0.001, 0.0001]
                 },
                 cv=5, scoring='neg_mean_squared_error', verbose=0, n_jobs=-1
@@ -68,7 +68,7 @@ def run_svr_poly_2d(label):
             best_params = grid_result.best_params_
             print("\nBest: %f using %s" % (grid_result.best_score_, grid_result.best_params_))
 
-            poly_svr_2d = SVR(
+            poly_svr_3d = SVR(
                 kernel='poly',
                 C=best_params["C"],
                 epsilon=best_params["epsilon"],
@@ -81,9 +81,9 @@ def run_svr_poly_2d(label):
                 max_iter=-1
             )
 
-            poly_svr_2d.fit(X[train_index], Y[train_index])
+            poly_svr_3d.fit(X[train_index], Y[train_index])
 
-            y_pred = poly_svr_2d.predict(X[test_index])
+            y_pred = poly_svr_3d.predict(X[test_index])
 
             for item in y_pred:
                 predictions.append(item)
@@ -101,9 +101,9 @@ def run_svr_poly_2d(label):
             "RMSPE: ", RMSPE, "\n",
         )
 
-        file_name = "results/" + "svr_poly_2d_" + label + ".csv"
+        file_name = "results/" + "svr_poly_3d_" + label + ".csv"
         with open(file_name, "a") as f:
             writer = csv.writer(f)
             writer.writerows(zip(y_actual, predictions))
     else:
-        print("Invalid Parameters for SVR_Poly Run Function")
+        print("Invalid Parameters for SVR_Poly_3D Run Function")

@@ -100,7 +100,7 @@ def run_svr_rbf(label):
             "RMSPE: ", RMSPE, "\n",
         )
 
-        file_name = "/results/" + "svr_rbf_" + label + ".csv"
+        file_name = "results/" + "svr_rbf_" + label + ".csv"
         with open(file_name, "a") as f:
             writer = csv.writer(f)
             writer.writerows(zip(y_actual, predictions))

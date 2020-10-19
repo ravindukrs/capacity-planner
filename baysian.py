@@ -109,7 +109,7 @@ def run_baysian(label):
             "RMSPE: ", RMSPE, "\n",
         )
 
-        file_name = "/results/" + "baysian_" + label + ".csv"
+        file_name = "results/" + "baysian_" + label + ".csv"
         with open(file_name, "a") as f:
             writer = csv.writer(f)
             writer.writerows(zip(y_actual, predictions))

@@ -24,7 +24,7 @@ class BayesianRBFRegression:
             σ = pm.HalfCauchy("σ", beta=0.1)  # 5, 0.5, 2
             y_ = self.gp.marginal_likelihood("y", X=X, y=Y, noise=σ)
 
-            self.map_trace = [pm.find_MAP()]
+            self.map_trace = pm.sample()
 
     def predict(self, X, with_error=False):
         with self.model:

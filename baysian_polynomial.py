@@ -13,16 +13,22 @@ from metric_functions import root_mean_squared_percentage_error, mean_absolute_p
 
 
 class BayesianRBFRegression:
-    def fit(self, X, Y):
+    def fit(self, X, Y, dValue):
         with pm.Model() as self.model:
-            ℓ = pm.Gamma("ℓ", alpha=1, beta=1)
-            η = pm.HalfCauchy("η", beta=5)
+            l = pm.Gamma("l", alpha=2, beta=1)
+            offset = pm.Gamma("offset", alpha=2, beta=1)
+            nu = pm.HalfCauchy("nu", beta=1)
+            d = pm.HalfNormal("d", sd=5)
 
-            cov = η ** 2 * pm.gp.cov.Matern52(X.shape[1], ℓ)
+            if dValue == True:
+                cov = nu ** 2 * pm.gp.cov.Polynomial(X.shape[1], l, d, offset)
+            else:
+                cov = nu ** 2 * pm.gp.cov.Polynomial(X.shape[1], l, 2, offset)
+
             self.gp = pm.gp.Marginal(cov_func=cov)
 
-            σ = pm.HalfCauchy("σ", beta=0.1)  # 5, 0.5, 2
-            y_ = self.gp.marginal_likelihood("y", X=X, y=Y, noise=σ)
+            sigma = pm.HalfCauchy("sigma", beta=1)
+            y_ = self.gp.marginal_likelihood("y", X=X, y=Y, noise=sigma)
 
             self.map_trace = [pm.find_MAP()]
 
@@ -37,20 +43,23 @@ class BayesianRBFRegression:
         return y_pred
 
 
-def eval_bayesian_rbf(X, y, eval_X, eval_y):
+def eval_bayesian_poly(X, y, eval_X, eval_y, dValue):
     lr = BayesianRBFRegression()
-    lr.fit(X, y)
+    lr.fit(X, y, dValue)
     pred_y, error = lr.predict(eval_X, True)
 
     return pred_y, error
 
 
-def run_baysian(label):
+def run_baysian_poly(label):
     predict_label = None
+    dValue = False
     if label == "tps":
         predict_label = 9
+        dValue = False
     elif label == "latency":
         predict_label = 10
+        dValue = True
 
     if predict_label == 9 or predict_label == 10:
         # Read Data
@@ -86,8 +95,8 @@ def run_baysian(label):
         kf = KFold(n_splits=10)
 
         for train_index, test_index in kf.split(X):
-            pred_bayes, error = eval_bayesian_rbf(np.copy(X[train_index]), np.copy(Y[train_index]),
-                                                  np.copy(X[test_index]), np.copy(Y[test_index]));
+            pred_bayes, error = eval_bayesian_poly(np.copy(X[train_index]), np.copy(Y[train_index]),
+                                                  np.copy(X[test_index]), np.copy(Y[test_index]), dValue);
 
             for item in pred_bayes:
                 predictions.append(item)
@@ -103,15 +112,15 @@ def run_baysian(label):
         RMSE = math.sqrt(mean_squared_error(y_actual, predictions, squared=True))
 
         print(
-            "Scores for Baysian_Matern: " + label + "\n",
+            "Scores for Baysian_Polynomial: " + label + "\n",
             "RMSE :", RMSE, "\n",
             "MAPE: ", MAPE, "\n",
             "RMSPE: ", RMSPE, "\n",
         )
 
-        file_name = "results/" + "baysian_" + label + ".csv"
+        file_name = "results/" + "baysian_poly" + label + ".csv"
         with open(file_name, "a") as f:
             writer = csv.writer(f)
             writer.writerows(zip(y_actual, predictions))
     else:
-        print("Invalid Parameters for Baysian Run Function")
+        print("Invalid Parameters for Baysian Polynomial Run Function")

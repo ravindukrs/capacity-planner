@@ -39,6 +39,7 @@ def run_rfr(label):
 
         # Apply Scaler on X
         scaler.fit(X)
+        X = scaler.transform(X)
 
         # Convert Y to 1D Array - Not necessary
         Y = Y.flatten()

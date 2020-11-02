@@ -38,6 +38,7 @@ def run_xgb(label):
 
         # Apply Scaler on X
         scaler.fit(X)
+        X = scaler.transform(X)
 
         # Convert Y to 1D Array - Not necessary
         Y = Y.flatten()
@@ -107,7 +108,7 @@ def run_xgb(label):
 
 
 
-        file_name = "/results/" + "xgb_"+label+ ".csv"
+        file_name = "results/" + "xgb_"+label+ ".csv"
         with open(file_name, "a") as f:
             writer = csv.writer(f)
             writer.writerows(zip(y_actual, predictions))

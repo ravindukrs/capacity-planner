@@ -81,6 +81,7 @@ def run_baysian_poly(label):
 
         # Apply Scaler on X
         scaler.fit(X)
+        X = scaler.transform(X)
 
         # Convert Y to 1D Array - Not necessary
         Y = Y.flatten()
@@ -109,7 +110,7 @@ def run_baysian_poly(label):
 
         RMSPE = root_mean_squared_percentage_error(y_actual, predictions)
         MAPE = mean_absolute_percentage_error(y_actual, predictions)
-        RMSE = math.sqrt(mean_squared_error(y_actual, predictions, squared=True))
+        RMSE = math.sqrt(mean_squared_error(y_actual, predictions))
 
         print(
             "Scores for Baysian_Polynomial: " + label + "\n",

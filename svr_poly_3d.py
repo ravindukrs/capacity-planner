@@ -38,6 +38,7 @@ def run_svr_poly_3d(label):
 
         # Apply Scaler on X
         scaler.fit(X)
+        X = scaler.transform(X)
 
         # Convert Y to 1D Array - Not necessary
         Y = Y.flatten()

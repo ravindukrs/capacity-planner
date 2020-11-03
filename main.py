@@ -13,7 +13,7 @@ if __name__ == '__main__':
     # run_svr_rbf("latency")
     # run_svr_poly_2d("latency")
     # run_svr_poly_3d("latency")
-    run_baysian("latency")
+    #run_baysian("latency")
     #run_baysian_poly("latency")
 
     #tps
@@ -23,7 +23,7 @@ if __name__ == '__main__':
     # run_svr_poly_2d("tps")
     # run_svr_poly_3d("tps")
     # run_baysian("tps")
-    # run_baysian_poly("tps")
+    run_baysian_poly("tps")
 
 
 

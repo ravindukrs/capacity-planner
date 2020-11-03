@@ -15,8 +15,14 @@ from metric_functions import root_mean_squared_percentage_error, mean_absolute_p
 class BayesianRBFRegression:
     def fit(self, X, Y, dValue):
         with pm.Model() as self.model:
-            l = pm.Gamma("l", alpha=2, beta=1)
-            offset = pm.Gamma("offset", alpha=2, beta=1)
+            if dValue == True:
+                l = pm.Gamma("l", alpha=1, beta=1)
+                offset = pm.Gamma("offset", alpha=2, beta=1)
+            else:
+                l = pm.Gamma("l", alpha=2, beta=1)
+                offset = 0.1
+
+
             nu = pm.HalfCauchy("nu", beta=1)
             d = pm.HalfNormal("d", sd=5)
 
